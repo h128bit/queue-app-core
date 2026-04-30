@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mlappcore"
-version = "1.0.0"
+version = "1.0.0dev1"
 description = "Template for ML web app"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,7 +20,13 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    ""
+    "fastapi",
+    "fastapi-utils",
+    "httpx",
+    "nest_asyncio",
+    "yarl",
+    "requests",
+    "peewee"
 ]
 
 [tool.setuptools.packages.find]

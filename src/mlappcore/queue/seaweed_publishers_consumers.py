@@ -1,4 +1,3 @@
-import os 
 import uuid 
 from mlappcore.dbs.object_dbs import SeaweedFSClient
 from requests.exceptions import HTTPError
@@ -6,9 +5,11 @@ from requests.exceptions import HTTPError
 
 class SimpleSeaweedPublisherConsumer:
     def __init__(self,
-                 object_db_path_or_url: str):
+                 object_db_path_or_url: str,
+                 query_q: str="query",
+                 response_q: str="response"):
 
-        self.object_db_client = SeaweedFSClient(filer_url=object_db_path_or_url)
+        self.object_db_client = SeaweedFSClient(filer_url=object_db_path_or_url, query_q=query_q, response_q=response_q)
 
 
     def _error_handler(self, err: HTTPError) -> int:
@@ -25,7 +26,7 @@ class SimpleSeaweedPublisherConsumer:
         response: dict = {"uuid": None, "status": "ok"}
 
         try: 
-            self.object_db_client.push(object, direct, obj_name)
+            self.object_db_client.push(direct=direct, object=object, file_name=obj_name)
             response["uuid"] = obj_name
         except HTTPError as err:
             response["status"] = self._error_handler(err)
@@ -39,9 +40,9 @@ class SimpleSeaweedPublisherConsumer:
         response: dict = {"object": None, "status": "ok"}
 
         try:
-            content = self.object_db_client.pull(object_uuid, direct)
+            content = self.object_db_client.pull(direct=direct, file_name=object_uuid)
             response["object"] = content
-            self.object_db_client.delete(object_uuid, direct)
+            self.object_db_client.delete(direct=direct, file_name=object_uuid)
         except HTTPError as err:
             response["status"] = self._error_handler(err)
 

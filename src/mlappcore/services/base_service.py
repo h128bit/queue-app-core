@@ -1,10 +1,8 @@
 from dotenv import dotenv_values
 from typing import Callable, Any
 
-from mlappcore.utils.enums import QueueNames
 from mlappcore.queue.seaweed_publishers_consumers import SimpleSeaweedPublisherConsumer
 from mlappcore.queue.rabbit_publishers_consumers import RabbitConsumer, RabbitPublisher
-from mlappcore.dbs.orm import ResponseResultTableORM
 
 
 class BaseService:
@@ -33,6 +31,8 @@ class BaseService:
             case _:
                 raise ValueError(f"Unsupported handler type, expected `router` or `handler`, got {handler_type}")
             
-        self._obj_db_client = SimpleSeaweedPublisherConsumer(obj_url)
+        self._obj_db_client = SimpleSeaweedPublisherConsumer(obj_url, 
+                                                             query_q=request_q, 
+                                                             response_q=response_q)
 
         # self._orm = ResponseResultTableORM()

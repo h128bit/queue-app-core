@@ -12,7 +12,8 @@ class SimpleRouter(BaseService):
     def push(self, object: bytes) -> dict:
         response = self._obj_db_client.push_object(object, self._request_q)
         if response["status"] == "ok":
-            self._q_broker.publish(uid)
+            uuid = response["uuid"]
+            self._q_broker.publish(uuid)
         return response 
     
 

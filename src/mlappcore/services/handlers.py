@@ -6,7 +6,7 @@ from mlappcore.services.base_service import BaseService
 class SimpleHandler(BaseService):
     def __init__(self, 
                  config_path: str, 
-                 method: Callable[[Any], bytes], 
+                 method: Callable[[bytes], bytes], 
                  request_q: str="queue", 
                  response_q: str="response",):
         super().__init__(config_path, "handler", method=method, request_q=request_q, response_q=response_q)
@@ -23,9 +23,8 @@ class SimpleHandler(BaseService):
             res = self.method(file_obj)
             self._obj_db_client.push_object(res, self._response_q, object_id)
         except Exception as e:
-            response["status": "file process error"]
+            response["status"] = "500"
             # TODO: add error log
-        # self._orm.add_line(response)
 
 
     def start_consume(self):

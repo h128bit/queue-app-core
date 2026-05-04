@@ -1,9 +1,6 @@
-import asyncio
 import pika 
 import threading
 from typing import Callable, Any
-import sys 
-import os
 
 
 

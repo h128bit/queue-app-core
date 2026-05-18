@@ -9,7 +9,7 @@ class SimpleHandler(BaseService):
                  method: Callable[[bytes], bytes], 
                  request_q: str="queue", 
                  response_q: str="response",):
-        super().__init__(config_path, "handler", method=method, request_q=request_q, response_q=response_q)
+        super().__init__(config_path, handler_type="handler", method=method, request_q=request_q, response_q=response_q)
         self.method = method
 
 

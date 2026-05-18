@@ -21,10 +21,11 @@ class SimpleHandler(BaseService):
 
         try:
             res = self.method(file_obj)
-            self._obj_db_client.push_object(res, self._response_q, object_id)
+            print(type(res))
+            res = self._obj_db_client.push_object(res, self._response_q, object_id)
         except Exception as e:
+            self._logger.error(f"SERVICE ERROR! Message {e}")
             response["status"] = "500"
-            # TODO: add error log
 
 
     def start_consume(self):

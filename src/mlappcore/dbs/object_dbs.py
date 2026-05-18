@@ -1,3 +1,4 @@
+import logging
 import requests
 from yarl import URL
 
@@ -15,6 +16,7 @@ class SeaweedFSClient:
         Client for interaction with SeaweedFS. 
 
         """
+        self._logger = logging.getLogger(self.__class__.__name__)
 
         self.filer_url = URL(filer_url)
         self.root = root
@@ -42,7 +44,8 @@ class SeaweedFSClient:
              direct: str,
              object: bytes, 
              file_name: str) -> dict:
-        
+        self._logger.info("Push the object into SeaweedFS")
+
         location = self._get_location(direct, file_name)
 
         params = {"ttl": self.ttl}
@@ -56,6 +59,8 @@ class SeaweedFSClient:
     def pull(self,
              direct: str,
              file_name: str) -> bytes:
+        self._logger.info("Pull the object from SeaweedFS")
+
         location = self._get_location(direct, file_name)
 
         response = requests.get(location)
@@ -69,5 +74,7 @@ class SeaweedFSClient:
         location = self._get_location(direct, file_name)
 
         response = requests.delete(location)
+
+        self._logger.info(f"The object {file_name} was deleted with status {response.status_code}")
         return response.status_code
 

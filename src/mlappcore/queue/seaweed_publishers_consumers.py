@@ -1,6 +1,8 @@
 import uuid 
-from mlappcore.dbs.object_dbs import SeaweedFSClient
+import logging
 from requests.exceptions import HTTPError
+
+from mlappcore.dbs.object_dbs import SeaweedFSClient
 
 
 class SimpleSeaweedPublisherConsumer:
@@ -8,7 +10,9 @@ class SimpleSeaweedPublisherConsumer:
                  object_db_path_or_url: str,
                  query_q: str="query",
                  response_q: str="response"):
+        self._logger = logging.getLogger(self.__class__.__name__)
 
+        self._logger.info("SeaweedFS-Publisher-Consumer created")
         self.object_db_client = SeaweedFSClient(filer_url=object_db_path_or_url, query_q=query_q, response_q=response_q)
 
 
@@ -30,7 +34,9 @@ class SimpleSeaweedPublisherConsumer:
             response["uuid"] = obj_name
         except HTTPError as err:
             response["status"] = self._error_handler(err)
-                
+        
+        self._logger.info(f"Push object with status {response["status"]}")
+
         return response
     
 
@@ -45,5 +51,7 @@ class SimpleSeaweedPublisherConsumer:
             self.object_db_client.delete(direct=direct, file_name=object_uuid)
         except HTTPError as err:
             response["status"] = self._error_handler(err)
+
+        self._logger.info(f"The object was requested with status {response["status"]}")
 
         return response

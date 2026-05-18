@@ -1,3 +1,4 @@
+import logging
 from dotenv import dotenv_values
 from typing import Callable, Any
 
@@ -12,6 +13,8 @@ class BaseService:
                  request_q: str="queue",
                  response_q: str="response",
                  method: Callable[[Any], bytes]|None=None):
+        self._logger = logging.getLogger(self.__class__.__name__)
+
         config = dotenv_values(config_path)
 
         q_url = config["QUEUE_URL"]

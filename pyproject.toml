@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mlappcore"
-version = "1.0.0dev2"
+version = "1.0.1"
 description = "Template for ML web app"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,7 +12,7 @@ authors = [
     {name = "h128bit"}
 ]
 urls = {Homepage = "http://gitlab.fgau.local/t.asmus/mlappcore.git"}
-keywords = ["fastapi", "web", "ml"]
+keywords = ["ml", "rabbitmq"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -20,13 +20,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "fastapi",
-    "fastapi-utils",
-    "httpx",
-    "nest_asyncio",
+    "uuid",
+    "python-dotenv",
+    "pika",
     "yarl",
-    "requests",
-    "peewee"
+    "requests"
 ]
 
 [tool.setuptools.packages.find]

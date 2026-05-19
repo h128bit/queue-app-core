@@ -3,7 +3,7 @@ import logging
 import threading
 from typing import Callable, Any
 
-from tenacity import retry, stop_after_attempt
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 
 
@@ -53,7 +53,7 @@ class RabbitPublisher(_BaseRabbit):
         self._logger.info("Rabbit Publisher created")
     
 
-    @retry(stop=stop_after_attempt(3))
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     def publish(self, msg: str):
         self._logger.info("publish message")
 

@@ -66,6 +66,7 @@ class RabbitPublisher(_BaseRabbit):
                 mandatory=True)
         except Exception as e:
             self._logger.error(f"ERROR IN MESSAGE PUBLISH! Message: {e}")
+            raise e
         
 
 class RabbitConsumer(_BaseRabbit):

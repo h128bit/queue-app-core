@@ -27,7 +27,7 @@ class SimpleSeaweedPublisherConsumer:
                     obj_name: str|None=None) -> dict:
         if obj_name is None:
             obj_name = str(uuid.uuid4())
-        response: dict = {"uuid": None, "status": "ok"}
+        response: dict = {"uuid": None, "status": 200}
 
         try: 
             self.object_db_client.push(direct=direct, object=object, file_name=obj_name)
@@ -43,15 +43,14 @@ class SimpleSeaweedPublisherConsumer:
     def check_object_and_return(self, 
                                 object_uuid: str,
                                 direct: str) -> dict:
-        response: dict = {"object": None, "status": "ok"}
+        response: dict = {"object": None, "status": 200}
 
         try:
             content = self.object_db_client.pull(direct=direct, file_name=object_uuid)
             response["object"] = content
             self.object_db_client.delete(direct=direct, file_name=object_uuid)
+            self._logger.info(f"The object was requested with status {response["status"]}")
         except HTTPError as err:
             response["status"] = self._error_handler(err)
-
-        self._logger.info(f"The object was requested with status {response["status"]}")
 
         return response

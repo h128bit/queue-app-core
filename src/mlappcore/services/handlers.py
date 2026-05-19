@@ -14,18 +14,17 @@ class SimpleHandler(BaseService):
 
 
     def _on_message(self, object_id: str):
-        response: dict = {"name": object_id, "status": "ok"}
+        response: dict = {"name": object_id, "status": 200}
         obj = self._obj_db_client.check_object_and_return(object_id, self._request_q)
 
         file_obj = obj["object"]
 
         try:
             res = self.method(file_obj)
-            print(type(res))
             res = self._obj_db_client.push_object(res, self._response_q, object_id)
         except Exception as e:
             self._logger.error(f"SERVICE ERROR! Message {e}")
-            response["status"] = "500"
+            response["status"] = 500
 
 
     def start_consume(self):

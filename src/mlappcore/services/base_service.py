@@ -3,10 +3,14 @@ from dotenv import dotenv_values
 from typing import Callable, Any
 
 from mlappcore.queue.seaweed_publishers_consumers import SimpleSeaweedPublisherConsumer
-from mlappcore.queue.rabbit_publishers_consumers import RabbitConsumer, RabbitPublisher
+from mlappcore.queue.rabbit_publishers_consumers import RabbitConsumer, RabbitPublisher, RabbitPublisherAsync
 
 
 class BaseService:
+    """
+    Base class for Services.
+    """
+
     def __init__(self, 
                  config_path: str, 
                  handler_type: str, 
@@ -46,3 +50,23 @@ class BaseService:
         self._obj_db_client = SimpleSeaweedPublisherConsumer(obj_url, 
                                                              query_q=request_q, 
                                                              response_q=response_q)
+        
+
+class BaseServiceAsync(BaseService):
+    def __init__(self, 
+                 config_path: str, 
+                 handler_type: str, 
+                 request_q: str="queue",
+                 response_q: str="response",
+                 method: Callable[[Any], bytes]|None=None):
+        super().__init__(config_path=config_path, 
+                         handler_type="router", 
+                         request_q=request_q, 
+                         response_q=response_q, 
+                         method=method)
+        
+        if handler_type == "router":
+            config = dotenv_values(config_path)
+            config.pop("OBJECT_DB_PATH", None)
+            self._q_broker = RabbitPublisherAsync(**config)
+                

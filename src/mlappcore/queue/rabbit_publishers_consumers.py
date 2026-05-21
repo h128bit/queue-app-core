@@ -210,6 +210,8 @@ class RabbitPublisherAsync:
         """
         Async publish method.
         If in publish was raise exception method doing retry 3 times with pause between 2 seconds 
+        param: 
+        body: str -- messenge body
         """
 
         await self._initialize()
@@ -219,7 +221,6 @@ class RabbitPublisherAsync:
                 
                 channel = await conn.channel()
                 await channel.declare_queue(self.q_name, durable=True)
-                await channel.confirm_delivery()
 
                 async with channel:
                     message = aio_pika.Message(body=body.encode("utf-8"), delivery_mode=2)

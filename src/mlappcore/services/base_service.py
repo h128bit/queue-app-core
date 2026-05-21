@@ -9,6 +9,8 @@ from mlappcore.queue.rabbit_publishers_consumers import RabbitConsumer, RabbitPu
 class BaseService:
     """
     Base class for Services.
+
+    In creating class building RabbitMQ publisher and consumer clients and SeaweedFS client.
     """
 
     def __init__(self, 
@@ -21,25 +23,8 @@ class BaseService:
 
         q_config, db_config = self._read_config(config_path)
 
-        # config = dotenv_values(config_path)
-
-        # q_url = config["QUEUE_URL"]
-        # q_user = config["QUEUE_USER"]
-        # q_pass = config["QUEUE_PASSWORD"]
-        # q_port = int(config["QUEUE_PORT"])
-
-        # obj_url = config["OBJECT_DB_PATH"]
-
-        # self._request_q = request_q
-        # self._response_q = response_q
-
-        # config = {
-        #     "url": q_url,
-        #     "user": q_user,
-        #     "password": q_pass,
-        #     "port": q_port,
-        #     "q_name": request_q 
-        # }
+        self._request_q = request_q
+        self._response_q = response_q
 
         q_config["q_name"] = request_q
         match handler_type:
@@ -50,9 +35,9 @@ class BaseService:
             case _:
                 raise ValueError(f"Unsupported handler type, expected `router` or `handler`, got {handler_type}")
             
-        self._obj_db_client = SimpleSeaweedPublisherConsumer(query_q=request_q, 
-                                                             response_q=response_q,
-                                                             *db_config)
+        self._obj_db_client = SimpleSeaweedPublisherConsumer(object_db_path_or_url=db_config["object_db_path_or_url"],
+                                                             query_q=request_q, 
+                                                             response_q=response_q)
     def _read_config(self, config_path: str):
         config = dotenv_values(config_path)
 

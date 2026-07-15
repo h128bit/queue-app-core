@@ -51,3 +51,11 @@ html_theme_options = {
 html_static_path = ['_static']
 
 
+autodoc_mock_imports = [
+    "dotenv",
+    "pika",
+    "aio_pika",
+    "yarl",
+    "requests",
+    "tenacity",
+]

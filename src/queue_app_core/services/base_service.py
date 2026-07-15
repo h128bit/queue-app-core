@@ -20,8 +20,6 @@ class BaseService:
                  response_q: str="response",
                  method: Callable[[Any], bytes]|None=None):
         """
-        Base class for Services.
-
         Provides core functionality for building RabbitMQ publisher and consumer clients
         along with SeaweedFS client integration. Supports both router (publisher) and
         handler (consumer) modes.

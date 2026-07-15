@@ -18,8 +18,6 @@ class SimpleSeaweedPublisherConsumer:
             object_db_path_or_url (str): url to connect to seaweedfs filer
             query_q (str): folder name for storage query files. Defaults 'query'
             response_q (str): folder name for storage response files. Defaults 'response'
-        Returns: 
-            None:  
         """
         self._logger = logging.getLogger(self.__class__.__name__)
 

@@ -38,10 +38,6 @@ class SeaweedFSClient:
 
     def _get_location(self, direct, file_name) -> str:
         """
-        Build correct path for seaweedfs 
-        """
-
-        """
         Build correct path for SeaweedFS.
 
         Constructs a file path based on the specified directory type and file name.
@@ -74,10 +70,9 @@ class SeaweedFSClient:
         Method for send object in db.
 
         Args:
-        direct (str): Folder name where the object will be saved.
-            Must be either `query_q` or `response_q`.
-        object (bytes): Object data in bytes format to be stored.
-        file_name (str): Name of the file/object in the storage.
+            direct (str): Folder name where the object will be saved.
+            object (bytes): Object data in bytes format to be stored.
+            file_name (str): Name of the file/object in the storage.
 
         Returns:
             dict: JSON response from SeaweedFS 
@@ -103,8 +98,8 @@ class SeaweedFSClient:
         After was got object his will be deleted from db.
 
         Args:
-        direct (str): Folder name from which to retrieve the object.
-        file_name (str): Name of the file/object to retrieve.
+            direct (str): Folder name from which to retrieve the object.
+            file_name (str): Name of the file/object to retrieve.
 
         Returns:
             bytes: The retrieved object data in binary format.
@@ -126,8 +121,8 @@ class SeaweedFSClient:
         Method for deleting object from db
         
         Args:
-        direct (str): Folder name from which to delete the object.
-        file_name (str): Name of the file/object to delete.
+            direct (str): Folder name from which to delete the object.
+            file_name (str): Name of the file/object to delete.
 
         Returns:
             int: HTTP status code of the deletion request. Typically 200 or 204 

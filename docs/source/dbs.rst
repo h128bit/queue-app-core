@@ -1,11 +1,8 @@
-queue\_app\_core.dbs package
-============================
+dbs package
+===========
 
-Submodules
-----------
-
-queue\_app\_core.dbs.object\_dbs module
----------------------------------------
+object\_dbs module
+------------------
 
 .. automodule:: queue_app_core.dbs.object_dbs
    :members:

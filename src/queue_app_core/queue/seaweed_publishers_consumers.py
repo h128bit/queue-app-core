@@ -55,7 +55,7 @@ class SimpleSeaweedPublisherConsumer:
         except HTTPError as err:
             response["status"] = self._error_handler(err)
         
-        self._logger.info(f"Push object with status {response["status"]}")
+        self._logger.info(f"Push object with status {response['status']}")
 
         return response
     
@@ -78,7 +78,7 @@ class SimpleSeaweedPublisherConsumer:
             content = self.object_db_client.pull(direct=direct, file_name=object_uuid)
             response["object"] = content
             self.object_db_client.delete(direct=direct, file_name=object_uuid)
-            self._logger.info(f"The object was requested with status {response["status"]}")
+            self._logger.info(f"The object was requested with status {response['status']}")
         except HTTPError as err:
             response["status"] = self._error_handler(err)
 

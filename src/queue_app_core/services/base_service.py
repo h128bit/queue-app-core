@@ -2,8 +2,8 @@ import logging
 from dotenv import dotenv_values
 from typing import Callable, Any
 
-from mlappcore.queue.seaweed_publishers_consumers import SimpleSeaweedPublisherConsumer
-from mlappcore.queue.rabbit_publishers_consumers import RabbitConsumer, RabbitPublisher, RabbitPublisherAsync
+from queue_app_core.queue.seaweed_publishers_consumers import SimpleSeaweedPublisherConsumer
+from queue_app_core.queue.rabbit_publishers_consumers import RabbitConsumer, RabbitPublisher, RabbitPublisherAsync
 
 
 class BaseService:
@@ -19,6 +19,30 @@ class BaseService:
                  request_q: str="queue",
                  response_q: str="response",
                  method: Callable[[Any], bytes]|None=None):
+        """
+        Base class for Services.
+
+        Provides core functionality for building RabbitMQ publisher and consumer clients
+        along with SeaweedFS client integration. Supports both router (publisher) and
+        handler (consumer) modes.
+
+        Args:
+            config_path (str): Path to the configuration file containing queue and database settings.
+            handler_type (str): Type of handler to initialize. Must be either 'router' for publishing
+                or 'handler' for consuming messages.
+            request_q (str, optional): Name of the request queue. Defaults to 'queue'.
+            response_q (str, optional): Name of the response queue. Defaults to 'response'.
+            method (Callable[[Any], bytes] | None, optional): Callback function for processing messages.
+                Required when handler_type is 'handler'. Accepts a message and returns bytes.
+                Defaults to None.
+
+        Raises:
+            ValueError: If handler_type is neither 'router' nor 'handler', or if required
+                parameters are missing for the specified type.
+            FileNotFoundError: If the configuration file does not exist.
+            ConnectionError: If unable to connect to RabbitMQ or SeaweedFS services.
+        """
+
         self._logger = logging.getLogger(self.__class__.__name__)
 
         q_config, db_config = self._read_config(config_path)
@@ -70,6 +94,28 @@ class BaseServiceAsync(BaseService):
                  request_q: str="queue",
                  response_q: str="response",
                  method: Callable[[Any], bytes]|None=None):
+        
+        """
+        Async version of the BaseService class.
+
+        Extends BaseService with asynchronous RabbitMQ publisher support
+        for non-blocking message publishing operations.
+
+        Args:
+            config_path (str): Path to the configuration file containing queue and database settings.
+            handler_type (str): Type of handler to initialize. Must be either 'router' for publishing
+                or 'handler' for consuming messages. Defaults to 'router' for async operations.
+            request_q (str, optional): Name of the request queue. Defaults to 'queue'.
+            response_q (str, optional): Name of the response queue. Defaults to 'response'.
+            method (Callable[[Any], bytes] | None, optional): Callback function for processing messages.
+                Required when handler_type is 'handler'. Defaults to None.
+
+        Raises:
+            ValueError: If handler_type is neither 'router' nor 'handler'.
+            FileNotFoundError: If the configuration file does not exist.
+            ConnectionError: If unable to connect to RabbitMQ services.
+        """
+
         super().__init__(config_path=config_path, 
                          handler_type="router", 
                          request_q=request_q, 

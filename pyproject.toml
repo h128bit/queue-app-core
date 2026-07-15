@@ -3,9 +3,9 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mlappcore"
+name = "queue_app_core"
 version = "1.1.4"
-description = "Template for ML web app"
+description = "Template for web app with queue"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [

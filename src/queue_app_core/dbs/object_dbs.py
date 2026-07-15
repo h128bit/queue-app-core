@@ -13,7 +13,14 @@ class SeaweedFSClient:
                  response_q: str="response"
                  ):
         """
-        Client for interaction with SeaweedFS. 
+        Client for interaction with SeaweedFS.
+
+        Args:
+            filer_url (str): Filer host URL.
+            root (str, optional): Root folder for storage files. Defaults to 'data/files'.
+            ttl (str, optional): Time to live for files in storage. Defaults to '1d'.
+            query_q (str, optional): Folder name for query input files. Defaults to 'query'.
+            response_q (str, optional): Folder name for response files. Defaults to 'response'.
         """
 
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -34,6 +41,21 @@ class SeaweedFSClient:
         Build correct path for seaweedfs 
         """
 
+        """
+        Build correct path for SeaweedFS.
+
+        Constructs a file path based on the specified directory type and file name.
+        The path is built by joining the appropriate base path (query or response)
+        with the provided file name.
+
+        Args:
+            direct (str): Directory type identifier. 
+            file_name (str): Name of the file to build the path for.
+
+        Returns:
+            str: Constructed full path string for the file in SeaweedFS.
+        """
+
         match direct:
             case self.query_q:
                 location = str(self._query_path / file_name)
@@ -50,10 +72,15 @@ class SeaweedFSClient:
              file_name: str) -> dict:
         """
         Method for send object in db.
-        params:
-        direct: str -- folder name where will be saveing object
-        object: bytes -- object for save in db
-        file_name: str -- object name in db
+
+        Args:
+        direct (str): Folder name where the object will be saved.
+            Must be either `query_q` or `response_q`.
+        object (bytes): Object data in bytes format to be stored.
+        file_name (str): Name of the file/object in the storage.
+
+        Returns:
+            dict: JSON response from SeaweedFS 
         """
 
         self._logger.info("Push the object into SeaweedFS")
@@ -74,9 +101,13 @@ class SeaweedFSClient:
         """
         Method for getting object from db.
         After was got object his will be deleted from db.
-        params:
-        direct: str -- folder name from which need get object
-        file_name: str -- object file name
+
+        Args:
+        direct (str): Folder name from which to retrieve the object.
+        file_name (str): Name of the file/object to retrieve.
+
+        Returns:
+            bytes: The retrieved object data in binary format.
         """
 
         self._logger.info("Pull the object from SeaweedFS")
@@ -93,9 +124,13 @@ class SeaweedFSClient:
                file_name: str) -> int:
         """
         Method for deleting object from db
-        params:
-        direct: str -- folder name from which need get object
-        file_name: str -- object file name
+        
+        Args:
+        direct (str): Folder name from which to delete the object.
+        file_name (str): Name of the file/object to delete.
+
+        Returns:
+            int: HTTP status code of the deletion request. Typically 200 or 204 
         """
 
         location = self._get_location(direct, file_name)

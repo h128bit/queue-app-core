@@ -2,14 +2,25 @@ import uuid
 import logging
 from requests.exceptions import HTTPError
 
-from mlappcore.dbs.object_dbs import SeaweedFSClient
+from queue_app_core.dbs.object_dbs import SeaweedFSClient
 
 
 class SimpleSeaweedPublisherConsumer:
+    """
+    Class for storage files in queue via seaweedfs
+    """
     def __init__(self,
                  object_db_path_or_url: str,
                  query_q: str="query",
                  response_q: str="response"):
+        """
+        Args:
+            object_db_path_or_url (str): url to connect to seaweedfs filer
+            query_q (str): folder name for storage query files. Defaults 'query'
+            response_q (str): folder name for storage response files. Defaults 'response'
+        Returns: 
+            None:  
+        """
         self._logger = logging.getLogger(self.__class__.__name__)
 
         self._logger.info("SeaweedFS-Publisher-Consumer created")
@@ -25,6 +36,17 @@ class SimpleSeaweedPublisherConsumer:
                     object: bytes,
                     direct: str,
                     obj_name: str|None=None) -> dict:
+        """
+        Method for push object to storagte
+
+        Args:
+            object (bytes): object to storage
+            direct (str): folder name for storage
+            obj_name (str): object name in storage
+        Returns:
+            dict: dict in format {uuid: str, status: int}
+        """
+
         if obj_name is None:
             obj_name = str(uuid.uuid4())
         response: dict = {"uuid": None, "status": 200}
@@ -43,6 +65,15 @@ class SimpleSeaweedPublisherConsumer:
     def check_object_and_return(self, 
                                 object_uuid: str,
                                 direct: str) -> dict:
+        """
+        Method for checkong object in db by file id and return his if exists
+
+        Args:
+            object_uuid (str): file id 
+            direct (str): Search folder in the storage
+        Returns:
+            dict: dict in format {object: none or bytes, status: int}
+        """
         response: dict = {"object": None, "status": 200}
 
         try:

@@ -57,12 +57,26 @@ class _BaseRabbit:
 
 
 class RabbitPublisher(_BaseRabbit): 
+    """
+    Synchronous Rabbit Publisher class
+    """
+
     def __init__(self, 
                  url: str, 
                  user: str,
                  password: str,
                  port: int=5672,
                  q_name: str="queue"):
+        """
+        Initialize the RabbitMQ client.
+
+        Args:
+            url (str): URL of the RabbitMQ server.
+            user (str): RabbitMQ username for authentication.
+            password (str): RabbitMQ password for authentication.
+            port (int, optional): RabbitMQ connection port. Defaults to 5672.
+            q_name (str, optional): Name of the query queue for publishing. Defaults to 'queue'.
+        """
         super().__init__(url, user, password, port, q_name)
         self._logger.info("Rabbit Publisher created")
     
@@ -72,8 +86,22 @@ class RabbitPublisher(_BaseRabbit):
            retry=retry_if_exception_type(Exception))
     def publish(self, msg: str):
         """
-        Synchronous publish method.
-        If in publish was raise exception method doing retry 3 times with pause between 2 seconds 
+        Synchronous publish method with retry logic.
+
+        Attempts to publish a message to the RabbitMQ queue. If an exception occurs
+        during publishing, the method will retry up to 3 times with a 2-second
+        pause between each attempt.
+
+        Args:
+            msg (str): Message to be published to the queue.
+
+        Raises:
+            Exception: If all retry attempts fail.
+            ConnectionError: If unable to connect to RabbitMQ.
+            TimeoutError: If the publish operation times out.
+
+        Example:
+            >>> client.publish('Hello World')
         """
 
         self._logger.info("Publish message")
@@ -108,6 +136,26 @@ class RabbitConsumer(_BaseRabbit):
                  on_message: Callable[[Any], bytes],
                  port: int=5672,
                  q_name: str="queue"):
+        """
+        Initialize the RabbitMQ consumer client.
+
+        Sets up connection parameters for RabbitMQ messaging service with
+        a callback function for processing incoming messages.
+
+        Args:
+            url (str): URL of the RabbitMQ server.
+            user (str): RabbitMQ username for authentication.
+            password (str): RabbitMQ password for authentication.
+            on_message (Callable[[Any], bytes]): Function to be called when a message is received.
+                Accepts a message of any type and returns bytes.
+            port (int, optional): RabbitMQ connection port. Defaults to 5672.
+            q_name (str, optional): Name of the query queue for consuming. Defaults to 'queue'.
+
+        Raises:
+            ConnectionError: If the connection parameters are invalid.
+            ValueError: If required parameters are missing or empty.
+        """
+
         super().__init__(url, user, password, port, q_name)
         self._logger.info("Rabbit Consumer created")
 
@@ -162,6 +210,29 @@ class RabbitPublisherAsync:
                  port: int=5672, 
                  q_name: str="queue",
                  max_connections: int=1):
+        """
+        Initialize the RabbitMQ client.
+
+        Sets up connection parameters for RabbitMQ messaging service
+        with configurable connection pool settings.
+
+        Args:
+            url (str): URL of the RabbitMQ server.
+            user (str): RabbitMQ username for authentication.
+            password (str): RabbitMQ password for authentication.
+            port (int, optional): RabbitMQ connection port. Defaults to 5672.
+            q_name (str, optional): Name of the query queue for publishing. Defaults to 'queue'.
+            max_connections (int, optional): Maximum number of connections to maintain.
+                Defaults to 1.
+
+        Raises:
+            ConnectionError: If the connection parameters are invalid.
+            ValueError: If required parameters are missing or empty.
+
+        Example:
+            >>> client = RabbitClient('localhost', 'guest', 'guest', 
+            ...                       port=5672, q_name='tasks', max_connections=5)
+        """
         
         self._logger = logging.getLogger(self.__class__.__name__)
         self._amqp_url = f"amqp://{user}:{password}@{url}:{port}/"
@@ -208,10 +279,22 @@ class RabbitPublisherAsync:
            retry=retry_if_exception_type(Exception))
     async def publish(self, body: str):
         """
-        Async publish method.
-        If in publish was raise exception method doing retry 3 times with pause between 2 seconds 
-        param: 
-        body: str -- messenge body
+        Async publish method with retry logic.
+
+        Attempts to publish a message to the RabbitMQ queue asynchronously.
+        If an exception occurs during publishing, the method will retry up to 3 times
+        with a 2-second pause between each attempt.
+
+        Args:
+            body (str): Message body to be published to the queue.
+
+        Raises:
+            Exception: If all retry attempts fail.
+            ConnectionError: If unable to connect to RabbitMQ.
+            TimeoutError: If the publish operation times out.
+
+        Example:
+            >>> await client.publish('Hello World')
         """
 
         await self._initialize()

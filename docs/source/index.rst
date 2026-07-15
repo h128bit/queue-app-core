@@ -11,9 +11,9 @@ Queue app core documentation
    :maxdepth: 2
    :caption: Contents:
 
-   queue_app_core.dbs
-   queue_app_core.queue
-   queue_app_core.services
+   dbs
+   queue
+   services
    queue_app_core
    modules
 
